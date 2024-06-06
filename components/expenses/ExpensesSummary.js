@@ -1,11 +1,16 @@
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, Text } from 'react-native';
 
-function ExpensesSummary() {
+function ExpensesSummary({ period, expenses }) {
+  console.log('summary', expenses);
+  const totalSum = expenses.reduce((sum, expense) => {
+    return sum + expense.amount;
+  }, 0);
+
   return (
     <>
       <View>
-        <Text> Last 7 Days </Text>
-        <Text> $ 177.90</Text>
+        <Text> {period} </Text>
+        <Text> $ {totalSum.toFixed(2)}</Text>
         <FlatList />
       </View>
     </>

@@ -1,9 +1,10 @@
 import { Text } from 'react-native';
+import ExpensesOutput from '../components/expenses/ExpensesOutput';
 
 function AllExpenses() {
   return (
     <>
-      <Text>All Expense </Text>
+      <ExpensesOutput period='Total' />
     </>
   );
 }
