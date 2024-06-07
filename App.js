@@ -8,6 +8,7 @@ import RecentExpenses from './screen/RecentExpenses';
 import AllExpenses from './screen/AllExpenses';
 import { GlobalStyles } from './constant/styles';
 import { Ionicons } from '@expo/vector-icons';
+import IconButton from './components/UI/IconButton';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -15,12 +16,24 @@ const BottomTabs = createBottomTabNavigator();
 function ExpensesOverview() {
   return (
     <BottomTabs.Navigator
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
         headerTintColor: 'white',
         tabBarStyle: { backgroundColor: GlobalStyles.colors.primary500 },
         tabBarActiveTintColor: GlobalStyles.colors.accent500,
-      }}
+        headerRight: ({ tintColor }) => {
+          return (
+            <IconButton
+              icon='add'
+              size={24}
+              color={tintColor}
+              onPress={() => {
+                navigation.navigate('ManageExpense');
+              }}
+            />
+          );
+        },
+      })}
     >
       <BottomTabs.Screen
         name='RecentExpense'
@@ -53,7 +66,12 @@ export default function App() {
     <>
       <StatusBar style='auto' />
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+            headerTintColor: 'white',
+          }}
+        >
           <Stack.Screen
             name='ExpenseOverview'
             component={ExpensesOverview}
@@ -61,7 +79,11 @@ export default function App() {
               headerShown: false,
             }}
           />
-          <Stack.Screen name='ManageExpense' component={ManagedExpense} />
+          <Stack.Screen
+            name='ManageExpense'
+            component={ManagedExpense}
+            options={{ presentation: 'modal' }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </>
