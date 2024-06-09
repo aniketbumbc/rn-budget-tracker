@@ -9,62 +9,62 @@ export const dummyData = [
   },
   {
     id: 'e2',
-    title: 'A pair of bags',
+    title: 'A pair of bags-e',
     amount: 150.99,
     date: new Date('2022-01-11'),
   },
   {
     id: 'e3',
-    title: 'A pair of Rackets',
+    title: 'A pair of Rackets-e',
     amount: 199.99,
     date: new Date('2022-02-20'),
   },
 
   {
     id: 'e4',
-    title: 'A pair of Book',
+    title: 'A pair of Book-d',
     amount: 19.99,
     date: new Date('2022-04-20'),
   },
   {
     id: 'e5',
-    title: 'Iphone',
+    title: 'Iphone-d',
     amount: 1299.99,
     date: new Date('2022-05-01'),
   },
   {
     id: 'e6',
-    title: 'A pair of Book',
+    title: 'A pair of Book-c',
     amount: 19.99,
     date: new Date('2024-06-06'),
   },
   {
     id: 'e7',
-    title: 'Iphone',
+    title: 'Iphone-c',
     amount: 1299.99,
     date: new Date('2024-06-06'),
   },
   {
     id: 'e8',
-    title: 'A pair of Book',
+    title: 'A pair of Book-b',
     amount: 19.99,
     date: new Date('2024-06-05'),
   },
   {
     id: 'e9',
-    title: 'Iphone',
+    title: 'Iphone-b',
     amount: 1299.99,
     date: new Date('2024-06-07'),
   },
   {
     id: 'e10',
-    title: 'A pair of Book',
+    title: 'A pair of Book-a',
     amount: 19.99,
     date: new Date('2024-06-05'),
   },
   {
     id: 'e11',
-    title: 'Iphone',
+    title: 'Iphone-a',
     amount: 1299.99,
     date: new Date('2024-06-06'),
   },
@@ -107,7 +107,7 @@ function ExpensesContextProvider({ children }) {
   }
 
   function deleteExpense(id) {
-    dispatch({ type: 'DELETE', payload: id });
+    dispatch({ type: 'DELETE', payload: { id: id } });
   }
 
   function updateExpense(id, expenseData) {

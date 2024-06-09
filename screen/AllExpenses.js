@@ -8,7 +8,11 @@ function AllExpenses() {
 
   return (
     <>
-      <ExpensesOutput period='Total' expenses={expenseCtx.expenses} />
+      <ExpensesOutput
+        period='Total'
+        expenses={expenseCtx.expenses}
+        fallbackText={'Oppps!!! No expenses register found'}
+      />
     </>
   );
 }
