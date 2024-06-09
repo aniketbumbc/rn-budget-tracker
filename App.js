@@ -9,6 +9,7 @@ import AllExpenses from './screen/AllExpenses';
 import { GlobalStyles } from './constant/styles';
 import { Ionicons } from '@expo/vector-icons';
 import IconButton from './components/UI/IconButton';
+import ExpensesContextProvider from './store/expense-context';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -65,27 +66,29 @@ export default function App() {
   return (
     <>
       <StatusBar style='auto' />
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
-            headerTintColor: 'white',
-          }}
-        >
-          <Stack.Screen
-            name='ExpenseOverview'
-            component={ExpensesOverview}
-            options={{
-              headerShown: false,
+      <ExpensesContextProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+              headerTintColor: 'white',
             }}
-          />
-          <Stack.Screen
-            name='ManageExpense'
-            component={ManagedExpense}
-            options={{ presentation: 'modal' }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+          >
+            <Stack.Screen
+              name='ExpenseOverview'
+              component={ExpensesOverview}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name='ManageExpense'
+              component={ManagedExpense}
+              options={{ presentation: 'modal' }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ExpensesContextProvider>
     </>
   );
 }
