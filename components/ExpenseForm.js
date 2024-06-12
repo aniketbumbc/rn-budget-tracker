@@ -1,8 +1,25 @@
+import { useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import Input from './Input';
+import Button from './UI/Button';
 
-function ExpenseForm() {
-  function amountChanged() {}
+function ExpenseForm({ onCancel, onSubmit, submitButtonLabel }) {
+  const [inputValues, setInputValues] = useState({
+    title: '',
+    amount: '',
+    date: '',
+  });
+
+  function inputChangedHandler(inputIdentifier, enterAmount) {
+    setInputValues((currentInputValues) => {
+      return {
+        ...currentInputValues,
+        [inputIdentifier]: enterAmount,
+      };
+    });
+  }
+
+  function confirmHandler() {}
 
   return (
     <>
@@ -14,7 +31,8 @@ function ExpenseForm() {
             style={styles.rowInput}
             textInputConfig={{
               keyboardType: 'decimal-pad',
-              onChangeText: amountChanged,
+              onChangeText: inputChangedHandler.bind(this, 'amount'),
+              value: inputValues.amount,
             }}
           />
           <Input
@@ -23,7 +41,8 @@ function ExpenseForm() {
             textInputConfig={{
               placeholder: 'YYYY-MM-DD',
               maxLength: 10,
-              onChangeText: () => {},
+              onChangeText: inputChangedHandler.bind(this, 'date'),
+              value: inputValues.date,
             }}
           />
         </View>
@@ -31,8 +50,18 @@ function ExpenseForm() {
           label={'Title'}
           textInputConfig={{
             multiline: true,
+            onChangeText: inputChangedHandler.bind(this, 'title'),
+            value: inputValues.title,
           }}
         />
+        <View style={styles.buttonContainer}>
+          <Button mode={'flat'} onPress={onCancel} style={styles.buttonStyle}>
+            Cancel
+          </Button>
+          <Button onPress={onSubmit} style={styles.buttonStyle}>
+            {submitButtonLabel}
+          </Button>
+        </View>
       </View>
     </>
   );
@@ -59,5 +88,14 @@ const styles = StyleSheet.create({
     color: 'white',
     marginVertical: 24,
     textAlign: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonStyle: {
+    minWidth: 120,
+    marginHorizontal: 8,
   },
 });
