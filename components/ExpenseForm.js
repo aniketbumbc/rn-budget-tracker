@@ -3,11 +3,18 @@ import { View, StyleSheet, Text } from 'react-native';
 import Input from './Input';
 import Button from './UI/Button';
 
-function ExpenseForm({ onCancel, onSubmit, submitButtonLabel }) {
+function ExpenseForm({
+  onCancel,
+  onSubmit,
+  submitButtonLabel,
+  selectedExpenses,
+}) {
   const [inputValues, setInputValues] = useState({
-    title: '',
-    amount: '',
-    date: '',
+    title: selectedExpenses ? selectedExpenses.title : '',
+    amount: selectedExpenses ? selectedExpenses.amount.toString() : '',
+    date: selectedExpenses
+      ? selectedExpenses.date.toISOString().slice(0, 10)
+      : '',
   });
 
   function inputChangedHandler(inputIdentifier, enterAmount) {
@@ -19,7 +26,15 @@ function ExpenseForm({ onCancel, onSubmit, submitButtonLabel }) {
     });
   }
 
-  function confirmHandler() {}
+  function confirmHandler() {
+    const expenseData = {
+      amount: +inputValues.amount,
+      date: new Date(inputValues.date),
+      title: inputValues.title,
+    };
+
+    onSubmit(expenseData);
+  }
 
   return (
     <>
@@ -58,7 +73,7 @@ function ExpenseForm({ onCancel, onSubmit, submitButtonLabel }) {
           <Button mode={'flat'} onPress={onCancel} style={styles.buttonStyle}>
             Cancel
           </Button>
-          <Button onPress={onSubmit} style={styles.buttonStyle}>
+          <Button onPress={confirmHandler} style={styles.buttonStyle}>
             {submitButtonLabel}
           </Button>
         </View>
