@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     color: GlobalStyles.colors.primary700,
   },
   inputMultiline: {
-    minHeight: 150,
+    minHeight: 120,
     textAlignVertical: 'top',
   },
   invalidLabel: {

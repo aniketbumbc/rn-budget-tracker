@@ -21,6 +21,7 @@ function RecentExpenses() {
         setLoading(false);
         setErrorLoader('Cloud not fetch expenses');
       }
+      setLoading(false);
     }
 
     getExpense();
