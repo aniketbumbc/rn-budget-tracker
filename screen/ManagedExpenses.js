@@ -15,6 +15,7 @@ import {
 function ManagedExpense({ route, navigation }) {
   const expenseCtx = useContext(ExpenseContext);
   const [loading, setLoading] = useState(false);
+  const [errorLoader, setErrorLoader] = useState();
 
   const editExpenseId = route.params?.expenseId;
   const isEditing = !!editExpenseId;
@@ -43,17 +44,35 @@ function ManagedExpense({ route, navigation }) {
     setLoading(true);
     if (isEditing) {
       expenseCtx.updateExpense(editExpenseId, expenseData);
-      await updateExpense(editExpenseId, expenseData);
+      try {
+        await updateExpense(editExpenseId, expenseData);
+      } catch {
+        setLoading(false);
+        setErrorLoader('Cloud not edit expenses now please try agin later!!!');
+      }
     } else {
-      const id = await postExpenseData(expenseData);
-      expenseCtx.addExpense({ ...expenseData, id: id });
+      try {
+        const id = await postExpenseData(expenseData);
+        expenseCtx.addExpense({ ...expenseData, id: id });
+      } catch {
+        setLoading(false);
+        setErrorLoader('Cloud not save expenses please try again later!!!!');
+      }
     }
-    setLoading(false);
+
     navigation.goBack();
+  }
+
+  function errorHandler() {
+    setErrorLoader(null);
   }
 
   if (loading) {
     return <Loader />;
+  }
+
+  if (errorLoader && !loading) {
+    return <ErrorOverlay message={errorLoader} onConfirm={errorHandler} />;
   }
 
   return (

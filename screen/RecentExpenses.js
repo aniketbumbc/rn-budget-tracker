@@ -4,24 +4,38 @@ import { ExpenseContext } from '../store/expense-context';
 import { getDateMinus } from '../utils/utils';
 import { getExpenseData } from '../utils/service';
 import Loader from '../components/UI/Loader';
+import ErrorOverlay from '../components/UI/ErrorOverlay';
 
 function RecentExpenses() {
   const expenseCtx = useContext(ExpenseContext);
   const [loading, setLoading] = useState(true);
+  const [errorLoader, setErrorLoader] = useState();
 
   useEffect(() => {
     async function getExpense() {
       setLoading(true);
-      const expenses = await getExpenseData();
-      expenseCtx.setExpenses(expenses);
-      setLoading(false);
+      try {
+        const expenses = await getExpenseData();
+        expenseCtx.setExpenses(expenses);
+      } catch {
+        setLoading(false);
+        setErrorLoader('Cloud not fetch expenses');
+      }
     }
 
     getExpense();
   }, []);
 
+  function errorHandler() {
+    setErrorLoader(null);
+  }
+
   if (loading) {
     return <Loader />;
+  }
+
+  if (errorLoader && !loading) {
+    return <ErrorOverlay message={errorLoader} onConfirm={errorHandler} />;
   }
 
   const recentExpenses = expenseCtx.expenses.filter((item) => {
