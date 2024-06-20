@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -11,11 +11,54 @@ import { Ionicons } from '@expo/vector-icons';
 import IconButton from './components/UI/IconButton';
 import ExpensesContextProvider from './store/expense-context';
 import { EvilIcons } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 function ExpensesOverview() {
+  const premissionHandler = async () => {
+    const settings = await Notifications.getPermissionsAsync();
+    const isGranted = settings.granted;
+
+    if (!isGranted) {
+      const request = await Notifications.requestPermissionsAsync();
+
+      if (request.granted) {
+        Alert.alert(
+          'You have granted permissions',
+          'You can now receive notifications'
+        );
+      } else {
+        Alert.alert(
+          'You did not grant permissions',
+          'You will be unable to receive notifications'
+        );
+      }
+    }
+  };
+
+  async function schedulePushNotification() {
+    premissionHandler();
+    console.log('Testing notify');
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Setup your budget',
+        body: 'Keep track your budget',
+        data: { userName: 'bunny' },
+      },
+      trigger: { seconds: 2 },
+    });
+  }
+
   return (
     <BottomTabs.Navigator
       screenOptions={({ navigation }) => ({
@@ -38,7 +81,12 @@ function ExpensesOverview() {
                   />
                 </View>
                 <View>
-                  <EvilIcons name='bell' size={30} color={tintColor} />
+                  <EvilIcons
+                    name='bell'
+                    size={30}
+                    color={tintColor}
+                    onPress={schedulePushNotification}
+                  />
                 </View>
               </View>
             </>
