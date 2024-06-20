@@ -12,6 +12,7 @@ import IconButton from './components/UI/IconButton';
 import ExpensesContextProvider from './store/expense-context';
 import { EvilIcons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
+import { useEffect } from 'react';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -25,6 +26,27 @@ Notifications.setNotificationHandler({
 });
 
 function ExpensesOverview() {
+  useEffect(() => {
+    const subscription = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        const userName = notification.request.content.data.userName;
+        console.log(userName);
+      }
+    );
+
+    const responseSubscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        console.log('response received');
+        console.log(response);
+      }
+    );
+
+    return () => {
+      subscription.remove();
+      responseSubscription.remove();
+    };
+  }, []);
+
   const premissionHandler = async () => {
     const settings = await Notifications.getPermissionsAsync();
     const isGranted = settings.granted;
@@ -48,7 +70,6 @@ function ExpensesOverview() {
 
   async function schedulePushNotification() {
     premissionHandler();
-    console.log('Testing notify');
     await Notifications.scheduleNotificationAsync({
       content: {
         title: 'Setup your budget',
