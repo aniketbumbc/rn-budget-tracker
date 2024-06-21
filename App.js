@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Alert } from 'react-native';
+import { StyleSheet, View, Alert, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -27,18 +27,31 @@ Notifications.setNotificationHandler({
 
 function ExpensesOverview() {
   useEffect(() => {
+    premissionHandler();
+
+    Notifications.getExpoPushTokenAsync({
+      projectId: '01c1ed6b-9afb-44e4-8b7e-973e45bfdf2c',
+    }).then((pushTokenData) => {});
+
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const subscription = Notifications.addNotificationReceivedListener(
       (notification) => {
         const userName = notification.request.content.data.userName;
-        console.log(userName);
       }
     );
 
     const responseSubscription = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        console.log('response received');
-        console.log(response);
-      }
+      (response) => {}
     );
 
     return () => {
@@ -64,6 +77,8 @@ function ExpensesOverview() {
           'You did not grant permissions',
           'You will be unable to receive notifications'
         );
+
+        return;
       }
     }
   };
@@ -77,6 +92,20 @@ function ExpensesOverview() {
         data: { userName: 'bunny' },
       },
       trigger: { seconds: 2 },
+    });
+  }
+
+  function sendPushNotification() {
+    fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: '',
+        title: 'Test send for device',
+        body: 'This is test',
+      }),
     });
   }
 
